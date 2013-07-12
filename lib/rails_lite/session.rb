@@ -20,5 +20,4 @@ class Session
   def store_session(res)
     res.cookies << WEBrick::Cookie.new('_rails_lite_app', @cookie.to_json)
   end
-
 end

@@ -2,7 +2,6 @@ require 'uri'
 
 class Params
   def initialize(req, route_params)
-    @req = req
     parse_www_encoded_form(req.query_string) if req.query_string
     @params||={}
     @params.merge!(route_params)
@@ -20,6 +19,7 @@ class Params
 
   def parse_www_encoded_form(www_encoded_form)
     @params = hash_tree
+
     URI.decode_www_form(www_encoded_form).each do |key,value|
       keys = parse_key(key)
       string = ""
@@ -33,11 +33,9 @@ class Params
 
   def parse_key(key)
     m = /(?<head>.*)\[(?<rest>.*)\]/.match(key)
-    if m.nil?
-      return [key]
-    else
-      parse_key(m[:head]) + [m[:rest]]
-    end
+    return [key] unless m
+
+    parse_key(m[:head]) + [m[:rest]]
   end
 
   def hash_tree
