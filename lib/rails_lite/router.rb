@@ -14,19 +14,37 @@ class Route
   end
 
   def run(req, res, params)
-    controller_class.new(req,res,params).invoke_action(action_name)
+    $testcontroller = controller_class.new(req,res,params)
+    $testcontroller.invoke_action(action_name)
+  end
+
+  def path
+    "/#{controller_name}/#{@action_name}"
+  end
+
+  def controller_name
+    @controller_class.to_s[0...-10].downcase
   end
 end
 
 class Router
-  attr_reader :routes
+
+  @@routes = []
+
+  def self.routes
+    @@routes
+  end
 
   def initialize
-    @routes = []
+    @@routes = []
+  end
+
+  def routes
+    @@routes
   end
 
   def add_route(pattern, method, controller_class, action_name)
-    @routes << Route.new(pattern, method, controller_class, action_name)
+    @@routes << Route.new(pattern, method, controller_class, action_name)
   end
 
   def draw(&proc)
@@ -35,13 +53,12 @@ class Router
 
   [:get, :post, :put, :delete].each do |http_method|
     define_method(http_method) do |pattern, controller_class, action_name|
-      @routes << Route.new(pattern, http_method, controller_class, action_name)
+      @@routes << Route.new(pattern, http_method, controller_class, action_name)
     end
-    # add these helpers in a loop here
   end
 
   def match(req)
-    @routes.each do |route|
+    @@routes.each do |route|
       return route if route.matches?(req)
     end
 

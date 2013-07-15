@@ -1,7 +1,7 @@
 require 'active_support/core_ext'
 require 'json'
 require 'webrick'
-require 'rails_lite'
+#require_relative 'rails_lite'
 
 # http://www.ruby-doc.org/stdlib-2.0/libdoc/webrick/rdoc/WEBrick.html
 # http://www.ruby-doc.org/stdlib-2.0/libdoc/webrick/rdoc/WEBrick/HTTPRequest.html
@@ -15,6 +15,10 @@ class StatusController < ControllerBase
     statuses = ["s1", "s2", "s3"]
 
     render_content(statuses.to_json, "text/json")
+  end
+
+  def new
+    render("new")
   end
 
   def show
@@ -33,11 +37,12 @@ end
 server.mount_proc '/' do |req, res|
   router = Router.new
   router.draw do
-    get Regexp.new("^/statuses$"), StatusController, :index
+    #get Regexp.new("^/statuses$"), StatusController, :index
+    get Regexp.new("^/statuses$"), StatusController, :new
     get Regexp.new("^/users$"), UserController, :index
 
     # uncomment this when you get to route params
-    get Regexp.new("^/statuses/(?<id>\\d+)$"), StatusController, :show
+   # get Regexp.new("^/statuses/(?<id>\\d+)$"), StatusController, :show
   end
 
   route = router.run(req, res)
