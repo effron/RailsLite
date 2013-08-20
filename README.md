@@ -1,4 +1,3 @@
-RailsLite
-=========
+Welcome to Rails-Lite
 
-Work from App Academy, week 4 day 5
+Rails-Lite is a recreation of a popular web-application framework that includes some things needed to create database-backed web applications according to the Model-View-Control pattern.
